@@ -61,8 +61,11 @@ impl<'a> TryFrom<&'a [u8]> for DepositInstructionData {
     }
 }
 
+// 定义 Deposit 指令的结构体
 pub struct Deposit<'a> {
+    // 指令所用到的账户们
     pub accounts: DepositAccounts<'a>,
+    // 指令所接收的数据
     pub instruction_data: DepositInstructionData,
 }
 

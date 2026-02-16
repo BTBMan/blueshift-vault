@@ -19,6 +19,7 @@ fn process_instruction(
     accounts: &[AccountView],
     instruction_data: &[u8],
 ) -> ProgramResult {
+    // 取出 instruction_data 切片中的第一个元素, 用来匹配调用的指令
     match instruction_data.split_first() {
         Some((Deposit::DISCRIMINATOR, data)) => Deposit::try_from((data, accounts))?.process(),
         Some((Withdraw::DISCRIMINATOR, _)) => Withdraw::try_from(accounts)?.process(),
