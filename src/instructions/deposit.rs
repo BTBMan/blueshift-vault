@@ -1,5 +1,6 @@
 use pinocchio::{error::ProgramError, AccountView, Address, ProgramResult};
 use pinocchio_system::instructions::Transfer;
+use solana_program_log::log;
 
 // 定义金库存钱所需要的账户列表
 pub struct DepositAccounts<'a> {
@@ -17,7 +18,9 @@ impl<'a> TryFrom<&'a [AccountView]> for DepositAccounts<'a> {
     // 实现 try_from 方法
     // 参数为账户列表切片
     fn try_from(accounts: &'a [AccountView]) -> Result<Self, Self::Error> {
-        // 结构账户列表, 获取 owner address 和 vault PDA
+        log!("accounts length: {}", accounts.len());
+
+        // 解构账户列表, 获取 owner address 和 vault PDA
         let [owner, vault, _] = accounts else {
             return Err(ProgramError::NotEnoughAccountKeys);
         };
@@ -28,7 +31,7 @@ impl<'a> TryFrom<&'a [AccountView]> for DepositAccounts<'a> {
         }
 
         // 验证 vault PDA 的所有者是不是系统程序
-        // 因为 PDA 只是是一个地址, 没有被重新分配 owner, 所以它的 owner 必须是系统程序
+        // 因为 PDA 只是一个地址, 没有被重新分配 owner, 所以它的 owner 必须是系统程序
         if !vault.owned_by(&pinocchio_system::ID) {
             return Err(ProgramError::InvalidAccountOwner);
         }
